@@ -85,6 +85,8 @@ legend{font-weight:600;font-size:.9rem;margin-bottom:6px}
 .unit{font-size:.8rem;color:var(--muted);font-weight:400}
 .flavors{display:grid;gap:8px}
 .pick.flavor{padding-left:8px}
+.pick.extra{grid-template-columns:minmax(0,1fr) auto auto}
+.remove{width:34px;height:34px;border-radius:50%;border:1px solid var(--line);background:var(--surface);color:var(--blush);font-size:1.3rem;line-height:1;cursor:pointer}
 .pick.flavor select{min-width:0;padding:9px 10px}
 .add{justify-self:start;background:none;border:0;color:var(--blush);font:600 .9rem var(--body);padding:4px 2px;cursor:pointer}
 .sr-only{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
@@ -193,13 +195,16 @@ function stepper(row,label){
  q.querySelectorAll('button').forEach(b=>b.onclick=()=>{row.qty=Math.max(0,row.qty+ +b.dataset.d);q.querySelector('output').textContent=row.qty;row.el.classList.toggle('on',row.qty>0);render()});
  return q;
 }
-function flavorRow(item,list,first){
+let rowSeq=0;
+function flavorRow(item,list){
  const row={item,flavor:'',qty:0};
  const el=document.createElement('div');el.className='pick flavor';row.el=el;
- const sid='f-'+item.id+'-'+rows.length;
+ const sid='f-'+item.id+'-'+(++rowSeq);
+ const extra=list.children.length>0;if(extra)el.classList.add('extra');
  el.innerHTML=`<label class="sr-only" for="${sid}">${item.name} flavor</label><select id="${sid}"><option value="">${item.flavors.length?'Choose a flavor':'Flavors coming soon'}</option>${item.flavors.map(f=>`<option>${f}</option>`).join('')}</select>`;
  el.querySelector('select').onchange=e=>{row.flavor=e.target.value;render()};
  el.appendChild(stepper(row,item.name));
+ if(extra){const x=document.createElement('button');x.type='button';x.className='remove';x.setAttribute('aria-label','Remove this '+item.name+' flavor');x.textContent='×';x.onclick=()=>{el.remove();rows.splice(rows.indexOf(row),1);render()};el.appendChild(x);}
  list.appendChild(el);rows.push(row);return row;
 }
 ORDER.forEach(item=>{
