@@ -151,7 +151,7 @@ footer a{color:inherit}
           <label for="method">Pickup or delivery
             <select id="method"><option>Pickup in Chula Vista</option><option>Delivery</option></select>
           </label>
-          <label for="occasion">Occasion<input id="occasion" placeholder="Birthday, baby shower…"></label>
+          <label for="occasion">Occasion<input id="occasion" placeholder="Birthday, baby shower, just a craving…"></label>
         </div>
         <label for="address" id="addressWrap" hidden>Delivery address<input id="address" autocomplete="street-address" placeholder="Street, city and ZIP code"><span class="hint">Delivery is available for an extra fee.</span></label>
         <fieldset id="picks"><legend>What would you like?</legend></fieldset>
@@ -254,7 +254,7 @@ function render(){
  $('deposit').textContent=total?(large?`Large order: $${dep} deposit (75%). Needs 14 days' notice.`:`Deposit: $${dep} (50%, $20 minimum)`):(table?'Dessert tables are priced by quote and need 14 days\' notice.':'');
  const chosen=rows.filter(r=>r.qty>0).map(r=>{const u=r.item.unit==='dozen'?' dozen':'';const p=unitPrice(r);return `• ${r.item.name}${r.item.flavors&&r.item.flavors.length?` (${r.flavor||'flavor not chosen'})`:''}: ${r.qty}${u}${p?` ($${p*r.qty})`:''}`});
  const n=$('name').value.trim(),dt=$('date').value,occ=$('occasion').value.trim(),notes=$('notes').value.trim();
- let m=`Hi Alexandra! ${n?`This is ${n}. `:''}I'd like to place an order${occ?` for a ${occ.toLowerCase()}`:''}.\n\n`;
+ let m=`Hi Alexandra! ${n?`This is ${n}. `:''}I'd like to place an order.${occ?`\nOccasion: ${occ}`:''}\n\n`;
  if(table)chosen.push("• Dessert table: I'd like more information on booking a dessert table.");
  m+=chosen.length?chosen.join('\n'):'• (pick some treats)';
  const del=$('method').value==='Delivery';$('addressWrap').hidden=!del;const addr=$('address').value.trim();
