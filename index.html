@@ -192,9 +192,9 @@ const grid=document.getElementById('menuGrid');
 grid.innerHTML=ITEMS.map(i=>`<li class="item">${i.img?`<img class="thumb" src="${i.img}" alt="">`:`<span class="thumb" aria-hidden="true">G</span>`}<div class="item-text"><h3>${i.name}</h3><span class="price">${i.price}</span></div></li>`).join('');
 
 const ORDER=[
- {id:"shooters",name:"Shooters",unit:"dozen",flavors:["Biscoff","Churro","Classic","Key lime","Lemon","Oreo"],prices:{Biscoff:45,Churro:45,Classic:40,"Key lime":45,Lemon:40,Oreo:40}},
+ {id:"shooters",name:"Shooters",unit:"dozen",flavors:["Biscoff","Classic","Key lime","Lemon","Oreo"],prices:{Biscoff:45,Classic:40,"Key lime":45,Lemon:40,Oreo:40}},
  {id:"banana",name:"Banana Pudding",unit:"tray",flavors:[],plain:true,price:40},
- {id:"rolls",name:"Cinnamon Rolls",unit:"dozen",flavors:["Banana","Churro","Regular"],prices:{Banana:45,Churro:45,Regular:35}}
+ {id:"rolls",name:"Cinnamon Rolls",unit:"dozen",flavors:["Banana","Regular"],prices:{Banana:45,Regular:35}}
 ];
 const rows=[];
 const picks=document.getElementById('picks');
