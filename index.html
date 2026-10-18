@@ -205,10 +205,11 @@ function flavorRow(item,list,first){
 ORDER.forEach(item=>{
  if(item.flavors){
   const g=document.createElement('div');g.className='group';
-  g.innerHTML=`<div class="group-head"><span class="group-name">${item.name}</span><span class="unit">by the ${item.unit==='whole'?'cake':item.unit}</span></div><div class="flavors"></div>`;
+  g.innerHTML=`<div class="group-head"><span class="group-name">${item.name}</span><span class="unit">by the ${item.unit==='whole'?'cake':item.unit}</span></div><div class="flavors"></div>${item.flavors.length&&!item.plain?'<button type="button" class="add">+ Add another flavor</button>':''}`;
   const list=g.querySelector('.flavors');
   if(item.plain){const row={item,qty:0};const el=document.createElement('div');el.className='pick';row.el=el;el.innerHTML='<span>How many trays?</span>';el.appendChild(stepper(row,item.name));list.appendChild(el);rows.push(row);}
   else flavorRow(item,list);
+  const add=g.querySelector('.add');if(add)add.onclick=()=>flavorRow(item,list);
   picks.appendChild(g);
  }else{
   const row={item,qty:0};
