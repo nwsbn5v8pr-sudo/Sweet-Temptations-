@@ -54,6 +54,7 @@ h2{font-family:var(--script);font-weight:400;font-size:2.9rem;line-height:1.1;ma
 .thumb{width:56px;height:56px;flex:none;border-radius:6px;object-fit:cover;display:block;background:var(--teal);color:var(--teal-ink);font-family:var(--script);font-size:1.6rem;line-height:56px;text-align:center}
 .item-text{display:grid;gap:2px;min-width:0}
 .price{font-size:.9rem;color:var(--muted);font-variant-numeric:tabular-nums}
+.deposit{margin:-6px 0 0;font-size:.9rem;color:var(--muted);min-height:1.2em;font-variant-numeric:tabular-nums}
 .total{margin:0;font-weight:700;font-size:1.05rem;min-height:1.3em;font-variant-numeric:tabular-nums}
 .item h3{font-family:var(--script);font-weight:400;font-size:1.75rem;line-height:1.2;margin:0;min-width:0}
 
@@ -88,6 +89,8 @@ legend{font-weight:600;font-size:.9rem;margin-bottom:6px}
 .unit{font-size:.8rem;color:var(--muted);font-weight:400}
 .flavors{display:grid;gap:8px}
 .pick.flavor{padding-left:8px}
+.pick.check{cursor:pointer;font-weight:500}
+.pick.check input{width:24px;height:24px;accent-color:var(--blush);margin:0 6px}
 .pick.extra{grid-template-columns:minmax(0,1fr) auto auto}
 .remove{width:34px;height:34px;border-radius:50%;border:1px solid var(--line);background:var(--surface);color:var(--blush);font-size:1.3rem;line-height:1;cursor:pointer}
 .pick.flavor select{min-width:0;padding:9px 10px}
@@ -157,6 +160,7 @@ footer a{color:inherit}
       <div class="send">
         <pre id="msg" hidden></pre>
         <p class="total" id="total" aria-live="polite"></p>
+        <p class="deposit" id="deposit"></p>
         <div class="cta-row">
           <a class="btn btn-main" id="emailOrder" href="mailto:sweetsbyalexb@icloud.com">Email my order</a>
           <a class="btn btn-main" id="textOrder" href="sms:+16192405846">Text my order</a>
@@ -164,8 +168,8 @@ footer a{color:inherit}
         </div>
         <p class="status" id="status" aria-live="polite"></p>
         <ul class="policy">
-          <li>Orders must be placed at least 7 days in advance. Large orders must be placed at least 14 days in advance.</li>
-          <li>A non-refundable deposit is due within 48 hours of placing your order.</li>
+          <li>Orders must be placed at least 7 days in advance. Large orders ($150 or more, or any dessert table) must be placed at least 14 days in advance.</li>
+          <li>A non-refundable deposit is due within 48 hours of placing your order: 50% of the total ($20 minimum), or 75% for large orders.</li>
           <li>Pickup is in Chula Vista. Delivery is available for an extra fee.</li>
         </ul>
       </div>
@@ -229,6 +233,10 @@ ORDER.forEach(item=>{
  }
 });
 
+const tableBox=document.createElement('div');tableBox.className='group';
+tableBox.innerHTML=`<div class="group-head"><span class="group-name">Dessert Table</span><span class="unit">priced by quote</span></div><label class="pick check" for="wantTable"><span>I'd like more information about a dessert table</span><input type="checkbox" id="wantTable"></label>`;
+picks.appendChild(tableBox);
+document.getElementById('wantTable').addEventListener('change',()=>render());
 const $=id=>document.getElementById(id);
 const minD=new Date();minD.setDate(minD.getDate()+7);
 const iso=d=>d.toISOString().slice(0,10);
@@ -238,21 +246,29 @@ function render(){
  const unitPrice=r=>r.item.prices?(r.item.prices[r.flavor]||0):(r.item.price||0);
  const total=rows.reduce((s,r)=>s+r.qty*unitPrice(r),0);
  const missing=rows.some(r=>r.qty>0&&r.item.prices&&!r.flavor);
+ const table=$('wantTable').checked;
+ const large=total>=150||table;
+ const dep=large?Math.ceil(total*0.75):Math.min(total,Math.max(20,Math.ceil(total*0.5)));
+ const depRule=large?'75% for large orders':'50% of the total, $20 minimum';
  $('total').textContent=total?`Estimated total: $${total}${missing?' + flavors not chosen yet':''}`:'';
+ $('deposit').textContent=total?(large?`Large order: $${dep} deposit (75%). Needs 14 days' notice.`:`Deposit: $${dep} (50%, $20 minimum)`):(table?'Dessert tables are priced by quote and need 14 days\' notice.':'');
  const chosen=rows.filter(r=>r.qty>0).map(r=>{const u=r.item.unit==='dozen'?' dozen':'';const p=unitPrice(r);return `• ${r.item.name}${r.item.flavors&&r.item.flavors.length?` (${r.flavor||'flavor not chosen'})`:''}: ${r.qty}${u}${p?` ($${p*r.qty})`:''}`});
  const n=$('name').value.trim(),dt=$('date').value,occ=$('occasion').value.trim(),notes=$('notes').value.trim();
  let m=`Hi Alexandra! ${n?`This is ${n}. `:''}I'd like to place an order${occ?` for a ${occ.toLowerCase()}`:''}.\n\n`;
+ if(table)chosen.push("• Dessert table: I'd like more information on booking a dessert table.");
  m+=chosen.length?chosen.join('\n'):'• (pick some treats)';
  const del=$('method').value==='Delivery';$('addressWrap').hidden=!del;const addr=$('address').value.trim();
  m+=`\n\nDate: ${dt?fmt(dt):'(choose a date)'}\n${$('method').value}${del?`\nDelivery address: ${addr||'(add your address)'}`:''}`;
- if(total)m+=`\nEstimated total: $${total}`;
+ if(total){const due=new Date(Date.now()+48*3600e3).toLocaleString('en-US',{weekday:'long',month:'long',day:'numeric',hour:'numeric',minute:'2-digit'});
+  m+=`\nEstimated total: $${total}\n${large?'Large order. ':''}Deposit: $${dep} (${depRule}), due within 48 hours, by ${due}. I understand the deposit is non-refundable.`;}
  if(notes)m+=`\nNotes: ${notes}`;
- m+=`\n\nCould you confirm my order and the deposit? Thank you!`;
+ m+=`\n\nCould you confirm my order and let me know how to send the deposit? Thank you!`;
  $('msg').textContent=m;
  $('textOrder').href='sms:+16192405846?&body='+encodeURIComponent(m);
  $('emailOrder').href='mailto:sweetsbyalexb@icloud.com?subject='+encodeURIComponent('Order request'+(n?' from '+n:''))+'&body='+encodeURIComponent(m);
- const late=dt&&dt<iso(minD);
- $('dateHint').textContent=late?'That is less than a week away. Alexandra may not be able to take it.':'Date must be at least 7 days from today';
+ const minLarge=new Date();minLarge.setDate(minLarge.getDate()+14);
+ const late=dt&&dt<iso(large?minLarge:minD);
+ $('dateHint').textContent=late?(large?'Large orders need at least 14 days\' notice. Alexandra may not be able to take this date.':'That is less than a week away. Alexandra may not be able to take it.'):(large?'Large orders: date must be at least 14 days from today':'Date must be at least 7 days from today');
  $('dateHint').style.color=late?'var(--blush)':'';
 }
 ['name','date','method','address','occasion','notes'].forEach(id=>{$(id).addEventListener('input',render);$(id).addEventListener('change',render)});
