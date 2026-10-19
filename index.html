@@ -243,7 +243,7 @@ picks.appendChild(tableBox);
 document.getElementById('wantTable').addEventListener('change',()=>render());
 const $=id=>document.getElementById(id);
 const minD=new Date();minD.setDate(minD.getDate()+7);
-const iso=d=>d.toISOString().slice(0,10);
+const iso=d=>`${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
 $('date').min=iso(minD);
 function fmt(v){if(!v)return'';const [y,m,d]=v.split('-');return new Date(y,m-1,d).toLocaleDateString('en-US',{weekday:'long',month:'long',day:'numeric'})}
 // Delivery fee: estimated from the customer's ZIP code, measured from Chula Vista 91913.
@@ -255,7 +255,7 @@ function milesFrom(lat,lon){const R=3958.8,r=x=>x*Math.PI/180,dLat=r(lat-ORIGIN.
  return Math.round(2*R*Math.asin(Math.sqrt(h))*1.2);}   // x1.2 turns straight-line distance into an estimate of driving miles
 function setDelivery(zip,mi){delivery.zip=zip;if(mi==null){delivery.status='unknown';return}
  delivery.miles=mi;if(mi>MAX_MILES){delivery.status='far';delivery.fee=0}else{delivery.status='ok';delivery.fee=deliveryFee(mi)}}
-function checkDelivery(addr){const m=addr.match(/\b(\d{5})(?:-\d{4})?\s*$/)||addr.match(/\b(9\d{4})\b/);
+function checkDelivery(addr){const all=[...addr.matchAll(/\b(\d{5})(?:-\d{4})?\b/g)];let m=all[all.length-1];if(m&&m.index===0)m=null;   // the ZIP is the last 5-digit number, never the street number at the start
  if(!m){delivery.zip='';delivery.status='none';return}
  const zip=m[1];if(zip===delivery.zip&&delivery.status!=='loading')return;
  if(zip in zipCache){setDelivery(zip,zipCache[zip]);return}
@@ -280,10 +280,10 @@ function render(){
  const missing=rows.some(r=>r.qty>0&&r.item.prices&&!r.flavor);
  const table=$('wantTable').checked;
  const large=subtotal>=150||table;
- const dep=large?Math.ceil(total*0.75):Math.min(total,Math.max(20,Math.ceil(total*0.5)));
+ const dep=large?Math.ceil(subtotal*0.75):Math.min(subtotal,Math.max(20,Math.ceil(subtotal*0.5)));
  const depRule=large?'75% for large orders':'50% of the total, $20 minimum';
  $('total').textContent=total?`Estimated total: $${total}${fee?` (includes $${fee} delivery)`:''}${missing?' + flavors not chosen yet':''}`:'';
- $('deposit').textContent=total?(large?`Large order: $${dep} deposit (75%). Needs 14 days' notice.`:`Deposit: $${dep} (50%, $20 minimum)`):(table?'Dessert tables are priced by quote and need 14 days\' notice.':'');
+ $('deposit').textContent=subtotal?(large?`Large order: $${dep} deposit (75%). Needs 14 days' notice.`:`Deposit: $${dep} (50%, $20 minimum)`):(table?'Dessert tables are priced by quote and need 14 days\' notice.':'');
  const chosen=rows.filter(r=>r.qty>0).map(r=>{const u=r.item.unit==='dozen'?' dozen':r.item.unit==='cake'?(r.qty>1?' cakes':' cake'):r.item.unit==='tray'?(r.qty>1?' trays':' tray'):'';const p=unitPrice(r);return `• ${r.item.name}${r.item.flavors&&r.item.flavors.length?` (${r.flavor||'flavor not chosen'})`:''}: ${r.qty}${u}${p?` ($${p*r.qty})`:''}`});
  const n=$('name').value.trim(),dt=$('date').value,occ=$('occasion').value.trim(),notes=$('notes').value.trim();
  let m=`Hi Alexandra! ${n?`This is ${n}. `:''}I'd like to place an order.${occ?`\nOccasion: ${occ}`:''}\n\n`;
