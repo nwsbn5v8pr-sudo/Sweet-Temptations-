@@ -62,7 +62,9 @@ h1,h2,h3,p,ul{margin:0}
 /* Header */
 .site-header{position:sticky;top:0;z-index:40;padding-top:env(safe-area-inset-top,0px);background:color-mix(in oklab,var(--background) 95%,transparent);-webkit-backdrop-filter:blur(8px);backdrop-filter:blur(8px);border-bottom:1px solid var(--border)}
 .header-row{display:flex;align-items:center;justify-content:space-between;padding-block:12px}
-.logo{width:56px;height:56px}
+.logo{width:56px;height:56px;transform:scale(2.2);transform-origin:left top;transition:transform .2s ease}
+.site-header.compact .logo{transform:none}
+@media (prefers-reduced-motion:reduce){.logo{transition:none}}
 .nav-links{display:none;gap:32px}
 .nav-links a,.mobile-nav a{font-size:14px;font-weight:500;letter-spacing:.2em;text-transform:uppercase}
 .nav-links a{padding-block:8px}
@@ -464,7 +466,9 @@ $('dmOrder').addEventListener('click',()=>{
 
 // Mobile menu
 const toggle=$('menuToggle'),mobileNav=$('mobileNav');
-function setMobileNav(open){mobileNav.hidden=!open;toggle.setAttribute('aria-expanded',String(open));toggle.textContent=open?'✕':'☰'}
+function updateLogo(){document.querySelector('.site-header').classList.toggle('compact',window.scrollY>40||!mobileNav.hidden)}
+function setMobileNav(open){mobileNav.hidden=!open;toggle.setAttribute('aria-expanded',String(open));toggle.textContent=open?'✕':'☰';updateLogo()}
+window.addEventListener('scroll',updateLogo,{passive:true});
 toggle.addEventListener('click',()=>setMobileNav(mobileNav.hidden));
 mobileNav.addEventListener('click',e=>{if(e.target.closest('a'))setMobileNav(false)});
 
