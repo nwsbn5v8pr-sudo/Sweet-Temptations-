@@ -334,13 +334,13 @@ legend{margin-bottom:8px;padding:0;font-family:var(--serif);font-size:24px;font-
 <script>
 const ITEMS=[
  {name:"Cheesecake Shooters",price:"$40 a dozen",desc:"Mini cups layered with graham crust and creamy cheesecake. 14 flavors.",img:"images/shooters-tray.jpg",alt:"Cheesecake shooters in clear cups topped with Biscoff cookies, mini Oreos, strawberries and white roses"},
- {name:"Banana Pudding",price:"$40 a tray",desc:"Vanilla pudding, Nilla wafers and fresh banana slices in a party tray.",img:"images/banana.jpg",alt:"Fresh banana slices layered in banana pudding"},
+ {name:"Banana Pudding",price:"$40 a tray",desc:"Vanilla pudding, Nilla wafers and fresh banana slices in a party tray.",img:"images/banana.jpg",alt:"Banana pudding cup layered with Nilla wafers and topped with a wafer and a fresh banana slice",pos:"50% 37%"},
  {name:"Cinnamon Rolls",price:"$35–45 a dozen",desc:"Soft, gooey rolls with thick cream cheese frosting. Regular or banana.",img:"images/cinnamon-rolls.jpg",alt:"Freshly frosted cinnamon rolls in pans topped with thick cream cheese frosting"},
  {name:"Choco Flan",price:"$50 a dozen",desc:"Rich chocolate cake beneath silky flan.",img:"images/choco-flan.jpg",alt:"Mini choco flans topped with whipped cream and a fresh strawberry, arranged on a dessert display"},
  {name:"Churro Cheesecake",price:"$50 a whole cake",desc:"Cinnamon-sugar churro layers with creamy cheesecake.",img:"images/churro-cheesecake.jpg",alt:"Churro cheesecake drizzled with sweetened condensed milk and framed with fresh strawberries"},
  {name:"Dessert Tables",price:"Ask for a quote",desc:"A full spread of shooters, dipped treats, cake pops and bars for your event.",img:"images/table.jpg",alt:"Dessert table with mini cheesecakes, cake pops and treats"}
 ];
-document.getElementById('menuGrid').innerHTML=ITEMS.map(i=>`<li class="menu-card"><img src="${i.img}" alt="${i.alt}" loading="lazy"><div><h3>${i.name}</h3><p class="price">${i.price}</p><p class="desc">${i.desc}</p></div></li>`).join('');
+document.getElementById('menuGrid').innerHTML=ITEMS.map(i=>`<li class="menu-card"><img src="${i.img}" alt="${i.alt}" loading="lazy"${i.pos?` style="object-position:${i.pos}"`:""}><div><h3>${i.name}</h3><p class="price">${i.price}</p><p class="desc">${i.desc}</p></div></li>`).join('');
 
 const ORDER=[
  {id:"shooters",name:"Cheesecake Shooters",unit:"dozen",flavors:["Banana Pudding", "Biscoff", "Chocolate Chip Cookie", "Ferrero Rocher", "Key Lime", "Kinder Bueno", "Lemon Raspberry", "Mazapan", "Oreo", "Pineapple Coconut", "Plain", "Reese's", "Snickers", "Strawberry Crunch"],prices:{"Banana Pudding":40,"Biscoff":40,"Chocolate Chip Cookie":40,"Ferrero Rocher":40,"Key Lime":40,"Kinder Bueno":40,"Lemon Raspberry":40,"Mazapan":40,"Oreo":40,"Pineapple Coconut":40,"Plain":40,"Reese's":40,"Snickers":40,"Strawberry Crunch":40}},
