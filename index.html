@@ -91,7 +91,7 @@ h1,h2,h3,p,ul{margin:0}
 .menu-card .desc{margin-top:8px;font-size:14px;color:var(--muted-foreground)}
 .tables{background:var(--secondary);border-block:1px solid color-mix(in oklab,var(--gold) 40%,transparent)}
 .tables-grid{display:grid;align-items:center;gap:40px;padding-block:80px}
-.tables-grid img{width:100%;aspect-ratio:4/3;object-fit:cover;border-radius:var(--radius)}
+.tables-grid img{width:100%;aspect-ratio:16/9;object-fit:cover;border-radius:var(--radius)}
 .tables-grid .muted{margin-top:16px}
 .tables-grid .btn{margin-top:24px}
 
@@ -236,7 +236,7 @@ legend{margin-bottom:8px;padding:0;font-family:var(--serif);font-size:24px;font-
 
     <section class="tables">
       <div class="container tables-grid">
-        <img src="images/choco-flan.jpg" alt="Tiered dessert display of mini choco flans and other treats set up for an event" loading="lazy">
+        <img src="images/dessert-table.jpg" alt="Dessert table with cheesecake shooters, mini choco flans, cake pops and parfaits on white risers over a light blue tablecloth" loading="lazy">
         <div>
           <p class="script">Celebrations</p>
           <h2 class="title">Custom Dessert Tables</h2>
@@ -337,8 +337,7 @@ const ITEMS=[
  {name:"Banana Pudding",price:"$40 a tray",desc:"Vanilla pudding, Nilla wafers and fresh banana slices in a party tray.",img:"images/banana.jpg",alt:"Banana pudding cup layered with Nilla wafers and topped with a wafer and a fresh banana slice",pos:"50% 37%"},
  {name:"Cinnamon Rolls",price:"$35–45 a dozen",desc:"Soft, gooey rolls with thick cream cheese frosting. Regular or banana.",img:"images/cinnamon-rolls.jpg",alt:"Freshly frosted cinnamon rolls in pans topped with thick cream cheese frosting"},
  {name:"Choco Flan",price:"$50 a dozen",desc:"Rich chocolate cake beneath silky flan.",img:"images/choco-flan.jpg",alt:"Mini choco flans topped with whipped cream and a fresh strawberry, arranged on a dessert display"},
- {name:"Churro Cheesecake",price:"$50 a whole cake",desc:"Cinnamon-sugar churro layers with creamy cheesecake.",img:"images/churro-cheesecake.jpg",alt:"Churro cheesecake drizzled with sweetened condensed milk and framed with fresh strawberries"},
- {name:"Dessert Tables",price:"Ask for a quote",desc:"A full spread of shooters, dipped treats, cake pops and bars for your event.",img:"images/table.jpg",alt:"Dessert table with mini cheesecakes, cake pops and treats"}
+ {name:"Churro Cheesecake",price:"$50 a whole cake",desc:"Cinnamon-sugar churro layers with creamy cheesecake.",img:"images/churro-cheesecake.jpg",alt:"Churro cheesecake drizzled with sweetened condensed milk and framed with fresh strawberries"}
 ];
 document.getElementById('menuGrid').innerHTML=ITEMS.map(i=>`<li class="menu-card"><img src="${i.img}" alt="${i.alt}" loading="lazy"${i.pos?` style="object-position:${i.pos}"`:""}><div><h3>${i.name}</h3><p class="price">${i.price}</p><p class="desc">${i.desc}</p></div></li>`).join('');
 
